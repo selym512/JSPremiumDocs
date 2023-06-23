@@ -39,9 +39,39 @@ function getToDos(){
         res.forEach(toDo => addToDoToDom(toDo));
     });
 }
+function toggleComplete(e){
+    if(e.target.classList.contains('todo')){
+        e.target.classList.toggle('done');
+    }
+    updateToDO(e.target.dataset.id, e.target.classList.contains('done'));
+}
+function deleteToDo(e){
+        if(e.target.classList.contains('todo')){
+            const id = e.target.dataset.id;
+            fetch(apiUrl + `/${id}`, {
+                method: 'DELETE',
+            })
+            .then(res => res.json())
+            .then(() => e.target.remove());
+        }
+    }
+function updateToDO(id, completed){
+    fetch(apiUrl + `/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify({ completed }),
+        headers: 
+        {
+          'Content-Type': 'application/json',
+          token: 'abc123',
+        },
+      });
+}
 const init = () => {
     button.addEventListener('click', reqAPI);
     document.addEventListener('DOMContentLoaded', getToDos);
+    document.addEventListener('click', toggleComplete);
+    document.addEventListener('dblclick', deleteToDo);
+
 }
 
 init();
